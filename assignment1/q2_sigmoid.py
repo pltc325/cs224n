@@ -4,12 +4,13 @@ import numpy as np
 
 
 def sigmoid(x):
+    # don't forget the negative sign before x!
     s = 1 / (1 + np.exp(-x))
     return s
 
 
 def sigmoid_grad(s):
-    ds = s * ( 1 - s)
+    ds = s*(1 - s)
     return ds
 
 
