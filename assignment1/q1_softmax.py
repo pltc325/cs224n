@@ -30,6 +30,8 @@ def softmax(x):
     if len(x.shape) > 1:
         # Matrix
         x = (x.T - np.max(x, axis=1)).T
+        # reshape solves broadcast issue
+        # see numpy broadcasting rules:https://docs.scipy.org/doc/numpy-1.13.0/user/basics.broadcasting.html
         x = np.exp(x) / np.sum(np.exp(x), axis=1).reshape((x.shape[0],1))
     else:
         # Vector
