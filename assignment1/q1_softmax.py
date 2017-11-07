@@ -30,7 +30,7 @@ def softmax(x):
     if len(x.shape) > 1:
         # Matrix
         x = (x.T - np.max(x, axis=1)).T
-        x = np.exp(x) / np.sum(np.exp(x), axis=1)
+        x = np.exp(x) / np.sum(np.exp(x), axis=1).reshape((x.shape[0],1))
     else:
         # Vector
         x = x - np.max(x)
