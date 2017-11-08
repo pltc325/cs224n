@@ -25,8 +25,14 @@ def gradcheck_naive(f, x):
         ix = it.multi_index
         rndstate = random.getstate()
         random.setstate(rndstate)
-        numgrad = (f(x[ix]+h)[0] - f(x[ix]-h)[0]) / (2*h)
 
+        x_ix_plus_h = x.copy()
+        x_ix_plus_h[ix] += h
+        x_ix_subs_h = x.copy()
+        x_ix_subs_h[ix] -= h
+
+        numgrad = (f(x_ix_plus_h)[0] - f(x_ix_subs_h)[0]) / (2*h)
+        print "numgrad", numgrad, "grad[ix]",grad[ix]
         # Compare gradients
         reldiff = abs(numgrad - grad[ix]) / max(1, abs(numgrad), abs(grad[ix]))
         if reldiff > 1e-5:

@@ -24,9 +24,10 @@ def forward_backward_prop(data, labels, params, dimensions):
     """
 
     ### Unpack network parameters (do not modify)
+    #print "params", params
     ofs = 0
     Dx, H, Dy = (dimensions[0], dimensions[1], dimensions[2])
-
+    print "Dx",Dx,"H",H,"Dy",Dy
     W1 = np.reshape(params[ofs:ofs+ Dx * H], (Dx, H))
     ofs += Dx * H
     b1 = np.reshape(params[ofs:ofs + H], (1, H))
@@ -34,21 +35,24 @@ def forward_backward_prop(data, labels, params, dimensions):
     W2 = np.reshape(params[ofs:ofs + H * Dy], (H, Dy))
     ofs += H * Dy
     b2 = np.reshape(params[ofs:ofs + Dy], (1, Dy))
-
+    print "W2 shape",W2.shape,"b2 shape",b2.shape
     ### YOUR CODE HERE: forward propagation
+    print "data shape",data.shape, "W1 shaep", W1.shape, "b1 shape", b1.shape
     h1 = np.matmul(data, W1) + b1
     a = sigmoid(h1)
     h2 = np.matmul(a, W2) + b2
     y = softmax(h2)
-    cost = np.sum(np.multiply(np.log(y), labels), axis=1)
+    cost = -np.sum(np.sum(np.multiply(np.log(y), labels), axis=1))
+    print "cost",cost
     ### END YOUR CODE
 
     ### YOUR CODE HERE: backward propagation
-    gradW2 = np.matmul((y - labels), a)
-    gradb2 = np.sum((y - labels), axis=1)
-
-    gradb1 = np.matmul(np.matmul((y - labels), np.matmul(a,(1-a))), W2)
-    gradW1 = np.matmul(gradb1, data)
+    print "y shape",y.shape, "labels shaep", labels.shape, "a shape", a.shape
+    gradW2 = np.matmul(a.T, (y - labels))
+    gradb2 = np.sum((y - labels), axis=0)
+    z = np.multiply(np.matmul((y - labels), W2.T),np.multiply(a, (1 - a)))
+    gradb1 = np.sum(z, axis=0)
+    gradW1 = np.matmul(data.T, z)
     ### END YOUR CODE
 
     ### Stack gradients (do not modify)
