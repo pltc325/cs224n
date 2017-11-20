@@ -18,8 +18,8 @@ def gradcheck_naive(f, x):
     random.setstate(rndstate)
     fx, grad = f(x) # Evaluate function value at original point
     h = 1e-4        # Do not change this!
-
     # Iterate over all indexes in x
+    print "grad in check", grad
     it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
     while not it.finished:
         ix = it.multi_index
@@ -30,7 +30,6 @@ def gradcheck_naive(f, x):
         x_ix_plus_h[ix] += h
         x_ix_subs_h = x.copy()
         x_ix_subs_h[ix] -= h
-
         numgrad = (f(x_ix_plus_h)[0] - f(x_ix_subs_h)[0]) / (2*h)
         print "numgrad", numgrad, "grad[ix]",grad[ix]
         # Compare gradients
