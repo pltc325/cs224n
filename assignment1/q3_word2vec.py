@@ -60,15 +60,20 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     ### YOUR CODE HERE
     label = np.zeros(outputVectors.shape[0])
     label[target] = 1
-    print "outputVectors shape", outputVectors.shape,"predicted shape",predicted.shape
-    softmax_predicted = softmax(np.matmul(outputVectors, predicted.reshape(predicted.shape[0],1)))
-    print "softmax_predicted shape",softmax_predicted.shape
-    cost = -np.dot(np.log(softmax_predicted.reshape(-1)), label)
-    
+    #print "outputVectors shape", outputVectors.shape,"predicted shape",predicted.shape
+    #print "outputVectors", outputVectors
+    #print "predicted", predicted
+    #print "mat", np.matmul(outputVectors, predicted.reshape(predicted.shape[0],1))
+    softmax_predicted = softmax(np.matmul(outputVectors, predicted.reshape(predicted.shape[0],1)).reshape(-1))
+    #print "softmax_predicted", softmax_predicted
+    #print "softmax_predicted shape",softmax_predicted.shape
+    #print "label", label
+    cost = -np.dot(np.log(softmax_predicted), label)
+    #print "cost", cost
     gradPred = np.matmul((softmax_predicted - label), outputVectors)
-    print "label shape", label.shape
-    print "predicted shape",predicted.shape,"softmax_predicted shape",softmax_predicted.shape, "softmax_predicted -label shape",(softmax_predicted - label).shape
-    grad = np.matmul((softmax_predicted - label.reshape(label.shape[0],1)), predicted.reshape((1,predicted.shape[0])))
+    #print "label shape", label.shape
+    #print "predicted shape",predicted.shape,"softmax_predicted shape",softmax_predicted.shape, "softmax_predicted -label shape",(softmax_predicted - label).shape
+    grad = np.matmul(((softmax_predicted - label).reshape(label.shape[0],1)), predicted.reshape((1,predicted.shape[0])))
     ### END YOUR CODE
 
     return cost, gradPred, grad

@@ -10,11 +10,11 @@ from q2_gradcheck import gradcheck_naive
 
 def forward_backward_prop(data, labels, params, dimensions):
     """
-    Forward and backward propagation for a two-layer sigmoidal network
+    Forward and backward propagation for a two-layer sigmoidal netwo rk
 
     Compute the forward propagation and for the cross entropy cost,
-    and backward propagation for the gradients for all parameters.
 
+    and backward propagation for the gradients for all parameters.
     Arguments:
     data -- M x Dx matrix, where each row is a training example.
     labels -- M x Dy matrix, where each row is a one-hot vector.
@@ -24,10 +24,8 @@ def forward_backward_prop(data, labels, params, dimensions):
     """
 
     ### Unpack network parameters (do not modify)
-    #print "params", params
     ofs = 0
     Dx, H, Dy = (dimensions[0], dimensions[1], dimensions[2])
-    print "Dx",Dx,"H",H,"Dy",Dy
     W1 = np.reshape(params[ofs:ofs+ Dx * H], (Dx, H))
     ofs += Dx * H
     b1 = np.reshape(params[ofs:ofs + H], (1, H))
@@ -35,24 +33,21 @@ def forward_backward_prop(data, labels, params, dimensions):
     W2 = np.reshape(params[ofs:ofs + H * Dy], (H, Dy))
     ofs += H * Dy
     b2 = np.reshape(params[ofs:ofs + Dy], (1, Dy))
-    print "W2 shape",W2.shape,"b2 shape",b2.shape
     ### YOUR CODE HERE: forward propagation
-    print "data shape",data.shape, "W1 shaep", W1.shape, "b1 shape", b1.shape
     h1 = np.matmul(data, W1) + b1
     a = sigmoid(h1)
     h2 = np.matmul(a, W2) + b2
     y = softmax(h2)
     cost = -np.sum(np.sum(np.multiply(np.log(y), labels), axis=1))
-    print "cost",cost
     ### END YOUR CODE
 
     ### YOUR CODE HERE: backward propagation
-    print "y shape",y.shape, "labels shaep", labels.shape, "a shape", a.shape
-    gradW2 = np.matmul(a.T, (y - labels))
-    gradb2 = np.sum((y - labels), axis=0)
-    z = np.multiply(np.matmul((y - labels), W2.T),np.multiply(a, (1 - a)))
-    gradb1 = np.sum(z, axis=0)
-    gradW1 = np.matmul(data.T, z)
+    grad_sofar = (y - labels)
+    gradW2 = np.matmul(a.T, grad_sofar)
+    gradb2 = np.sum(grad_sofar, axis=0)
+    grad_sofar = np.multiply(np.matmul(grad_sofar, W2.T),np.multiply(a, (1 - a)))
+    gradb1 = np.sum(grad_sofar, axis=0)
+    gradW1 = np.matmul(data.T, grad_sofar)
     ### END YOUR CODE
 
     ### Stack gradients (do not modify)
