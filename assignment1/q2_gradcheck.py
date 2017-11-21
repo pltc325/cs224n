@@ -24,7 +24,6 @@ def gradcheck_naive(f, x):
     it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
     while not it.finished:
         ix = it.multi_index
-        rndstate = random.getstate()
         temp_x = x.astype('float64')
         x_ix_plus_h = x.copy()
         x_ix_plus_h[ix] += h
