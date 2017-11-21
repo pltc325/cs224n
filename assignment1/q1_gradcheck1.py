@@ -7,7 +7,6 @@ import random
 # First implement a gradient checker by filling in the following functions
 def gradcheck_naive(f, x):
     """ Gradient check for a function f.
-
     Arguments:
     f -- a function that takes a single argument and outputs the
          cost and its gradients
@@ -18,26 +17,34 @@ def gradcheck_naive(f, x):
     random.setstate(rndstate)
     fx, grad = f(x) # Evaluate function value at original point
     h = 1e-4        # Do not change this!
+
     # Iterate over all indexes in x
+    it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
     print "grad in check\n", grad
     print "x\n",x
-    it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
     while not it.finished:
         ix = it.multi_index
-        rndstate = random.getstate()
+        # Try modifying x[ix] with h defined above to compute
+        # numerical gradients. Make sure you call random.setstate(rndstate)
+        # before calling f(x) each time. This will make it possible
+        # to test cost functions with built in randomness later.
+
+        ### YOUR CODE HERE:
         temp_x = x.astype('float64')
-        x_ix_plus_h = x.copy()
-        x_ix_plus_h[ix] += h
-        x_ix_subs_h = x.copy()
-        x_ix_subs_h[ix] -= h
-        print "x pos\n",x_ix_plus_h
-        print "x neg\n",x_ix_subs_h
+        temp_x[ix] += h
+        print "x pos\n",temp_x
         random.setstate(rndstate)
-        a1 = f(x_ix_plus_h)[0]
+        pos, _ = f(temp_x)
+        # temp_x = x
+        temp_x[ix] -= 2*h
+        print "x neg\n",temp_x
         random.setstate(rndstate)
-        a2 = f(x_ix_subs_h)[0]
-        numgrad = (a1 - a2) / (2*h)
-        print "ix",ix,"f_p",a1,"f_n",a2,"numgrad", numgrad, "grad[ix]",grad[ix]
+        neg, _ = f(temp_x)
+        numgrad = (pos - neg)/ (2*h)
+        print "ix",ix,"f_p",pos,"f_n",neg,"numgrad", numgrad, "grad[ix]",grad[ix]
+
+        ### END YOUR CODE
+
         # Compare gradients
         reldiff = abs(numgrad - grad[ix]) / max(1, abs(numgrad), abs(grad[ix]))
         if reldiff > 1e-5:
