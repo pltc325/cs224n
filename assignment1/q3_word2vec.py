@@ -4,8 +4,9 @@ import numpy as np
 import random
 
 from q1_softmax import softmax
-#from q2_gradcheck import gradcheck_naive
-from q1_gradcheck1 import gradcheck_naive
+from q2_gradcheck import gradcheck_naive
+from q2_sigmoid import sigmoid
+#from q1_gradcheck1 import gradcheck_naive
 
 def normalizeRows(x):
     """ Row normalization function
@@ -110,9 +111,14 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     # wish to match the autograder and receive points!
     indices = [target]
     indices.extend(getNegativeSamples(target, dataset, K))
-
+    grad = np.zeros(outputVectors.shape)
+    k_indices = indices[1:]
     ### YOUR CODE HERE
-    raise NotImplementedError
+    cost = -np.log(sigmoid(np.dot(outputVectors[target].reshape(-1), predicted))) - np.sum(np.log(sigmoid(np.matmul(outputVectors[k_indices],predicted).reshape(-1))))
+    gradPred = (sigmoid(np.dot(outputVectors[target].reshape(-1), predicted))-1) * outputVectors[target] \
+                - np.sum(sigmoid(np.matmul(-outputVectors[k_indices],predicted)-1) * outputVectors[k_indices], axis=0)
+    grad[target] = sigmoid(np.dot(outputVectors[target],predicted)) * predicted
+
     ### END YOUR CODE
 
     return cost, gradPred, grad
