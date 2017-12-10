@@ -5,7 +5,7 @@ import random
 
 
 # First implement a gradient checker by filling in the following functions
-def gradcheck_naive(f, x):
+def  gradcheck_naive(f, x):
     """ Gradient check for a function f.
 
     Arguments:
@@ -19,8 +19,8 @@ def gradcheck_naive(f, x):
     fx, grad = f(x) # Evaluate function value at original point
     h = 1e-4        # Do not change this!
     # Iterate over all indexes in x
-    print "grad in check\n", grad
-    print "x\n",x
+    print "your gradient\n", grad
+    #print "x\n",x
     it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
     while not it.finished:
         ix = it.multi_index
@@ -29,8 +29,6 @@ def gradcheck_naive(f, x):
         x_ix_plus_h[ix] += h
         x_ix_subs_h = x.copy()
         x_ix_subs_h[ix] -= h
-        print "x pos\n",x_ix_plus_h
-        print "x neg\n",x_ix_subs_h
         random.setstate(rndstate)
         a1 = f(x_ix_plus_h)[0]
         random.setstate(rndstate)
